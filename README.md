@@ -68,9 +68,9 @@ Number of unique subject-entities in the data splits.
 <tbody>
     <tr>
         <td>countryLandBordersCountry</td>
-        <td>63</td>
-        <td>63</td>
-        <td>63</td>
+        <td>68</td>
+        <td>68</td>
+        <td>67</td>
         <td>Null values possible</td>
     </tr>
     <tr>
@@ -81,7 +81,7 @@ Number of unique subject-entities in the data splits.
         <td>Null values possible</td>
     </tr>
     <tr>
-        <td>seriesHasNumberOfEpisodes</td>
+        <td>hasCapacity</td>
         <td>100</td>
         <td>100</td>
         <td>100</td>
@@ -100,6 +100,13 @@ Number of unique subject-entities in the data splits.
         <td>100</td>
         <td>100</td>
         <td>Null values possible</td>
+    </tr>
+        <tr>
+        <td>hasArea</td>
+        <td>100</td>
+        <td>100</td>
+        <td>100</td>
+        <td>Object is numeric</td>
     </tr>
 </tbody>
 </table>

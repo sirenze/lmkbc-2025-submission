@@ -5,6 +5,16 @@ from typing import List, Dict, Union
 
 import pandas as pd
 
+RELATION_TYPE = {
+    "awardWonBy": "string",  
+    "hasCapacity": "numeric",
+    "hasArea": "numeric",
+    "countryLandBordersCountry": "string",  
+    "personHasCityOfDeath": "string",
+    "companyTradesAtStockExchange" : "string"
+}
+
+
 
 def read_jsonl_file(file_path: Union[str, Path]) -> List[Dict]:
     with open(file_path, "r") as f:
@@ -12,13 +22,40 @@ def read_jsonl_file(file_path: Union[str, Path]) -> List[Dict]:
     return rows
 
 
-def true_positives(preds: List, gts: List) -> int:
-    tp = 0
-    for pred in preds:
-        if pred in gts:
-            tp += 1
+def true_positives(preds: List[str], gts: List[str], rel: str, rel_type: str, tolerance: float = 0.05) -> int:
+    if rel_type == "numeric":
+        return numeric_true_positives(preds, gts, tolerance)
+    elif rel_type == "string":
+        return string_true_positives(preds, gts)
+    else:
+        raise ValueError(f"Unknown relation type: {rel_type}")
 
+
+def try_parse_number(value: str) -> float:
+    try:
+        return float(value.replace(",", "").strip())
+    except (ValueError, AttributeError):
+        return None
+
+def numeric_true_positives(preds: List[str], gts: List[str], tolerance: float = 0.05) -> int:
+    tp = 0
+    gt_nums = [try_parse_number(gt) for gt in gts]
+    gt_nums = [gt for gt in gt_nums if gt is not None]
+
+    for pred in preds:
+        pred_num = try_parse_number(pred)
+        if pred_num is None:
+            continue
+        for gt_num in gt_nums:
+            if abs(pred_num - gt_num) / gt_num <= tolerance:
+                tp += 1
+                break
     return tp
+
+
+def string_true_positives(preds: List[str], gts: List[str]) -> int:
+    return sum(1 for pred in preds if pred.strip() in gts)
+
 
 
 def precision(preds: List[str], gts: List[str]) -> float:
@@ -55,28 +92,27 @@ def f1_score(p: float, r: float) -> float:
 def rows_to_dict(rows: List[Dict]) -> Dict:
     """Index the ground truth/prediction rows by subject entity and relation."""
     return {
-        (r["SubjectEntity"], r["Relation"]): list(set(r["ObjectEntitiesID"]))
+        (r["SubjectEntity"], r["Relation"]): list(set(r["ObjectEntities"]))
         for r in rows
     }
 
 
-def evaluate_per_sr_pair(pred_rows, gt_rows) -> List[Dict[str, float]]:
-    """Evaluate the predictions per Subject-Relation pair"""
+def evaluate_per_sr_pair(pred_rows, gt_rows, rel_types: Dict[str, str], tolerance: float = 0.05) -> List[Dict[str, float]]:
     pred_dict = rows_to_dict(pred_rows)
     gt_dict = rows_to_dict(gt_rows)
 
     results = []
 
     for subj, rel in gt_dict:
-        # get the ground truth objects
         gts = gt_dict[(subj, rel)]
+        preds = pred_dict.get((subj, rel), [])
 
-        # get the predictions
-        preds = pred_dict[(subj, rel)]
+        rel_type = rel_types.get(rel, "string")  # default to "string" if not found
+        tp = true_positives(preds, gts, rel=rel, rel_type=rel_type, tolerance=tolerance)
 
-        # calculate the scores
-        p = precision(preds, gts)
-        r = recall(preds, gts)
+
+        p = tp / len(preds) if preds else 1.0
+        r = tp / len(gts) if gts else 1.0
         f1 = f1_score(p, r)
 
         results.append({
@@ -85,12 +121,13 @@ def evaluate_per_sr_pair(pred_rows, gt_rows) -> List[Dict[str, float]]:
             "p": p,
             "r": r,
             "f1": f1,
-            "tp": true_positives(preds, gts),
+            "tp": tp,
             "total_pred": len(preds),
             "total_gt": len(gts),
         })
 
     return sorted(results, key=lambda x: (x["Relation"], x["SubjectEntity"]))
+
 
 
 def macro_average_per_relation(scores_per_sr: List[Dict[str, float]]) -> dict:
@@ -232,7 +269,7 @@ def main():
     gt_rows = read_jsonl_file(args.ground_truth)
 
     # Evaluate the predictions
-    scores_per_sr_pair = evaluate_per_sr_pair(pred_rows, gt_rows)
+    scores_per_sr_pair = evaluate_per_sr_pair(pred_rows, gt_rows, RELATION_TYPE, tolerance=0.05)
 
     # Macro average
     macro_per_relation = macro_average_per_relation(scores_per_sr_pair)

@@ -3,12 +3,14 @@ from enum import Enum
 from models.baseline_fill_mask_model import FillMaskModel
 from models.baseline_generation_model import GenerationModel
 from models.baseline_llama_3_chat_model import Llama3ChatModel
+from models.baseline_qwen_3_model import Qwen3Model
 
 
 class Models(Enum):
     BASELINE_FILL_MASK = "baseline_fill_mask"
     BASELINE_GENERATION = "baseline_generation"
     BASELINE_LLAMA_3_CHAT = "baseline_llama_3_chat"
+    BASELINE_QWEN_3 = "baseline_qwen_3"
 
     # Add more models here
 
@@ -21,5 +23,7 @@ class Models(Enum):
             return GenerationModel
         elif model == Models.BASELINE_LLAMA_3_CHAT:
             return Llama3ChatModel
+        elif model == Models.BASELINE_QWEN_3:
+            return Qwen3Model
         else:
             raise ValueError(f"Model `{model_name}` not found.")

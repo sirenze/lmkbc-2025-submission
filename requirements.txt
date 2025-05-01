@@ -1,6 +1,6 @@
 pandas
 torch
-transformers
+transformers>=4.51.0
 tqdm
 requests
 numpy

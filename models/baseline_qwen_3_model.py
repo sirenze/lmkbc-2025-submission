@@ -110,7 +110,6 @@ class Qwen3Model(GenerationModel):
                                         total=len(inputs),
                                         desc="Disambiguating entities"):
             # remove the original prompt from the generated text
-            logger.info(output)
             qa_answer = output[0]["generated_text"][len(prompt):].strip()
             # parsing thinking content
             try:

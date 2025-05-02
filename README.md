@@ -19,7 +19,7 @@ This repository contains:
 5. [Getting started](#getting-started)
     - [Setup](#setup)
     - [Baselines](#baselines)
-        - [Baseline 1: Qwen2.5-7B ](#Qwen/Qwen2.5-7B)
+        - [Baseline: Qwen3-8B](#baseline-qwen3-8b)
     - [How to structure your prediction file](#how-to-structure-your-prediction-file)
     - [Submit your predictions to CodaLab](#submit-your-predictions-to-codalab)
 
@@ -140,7 +140,7 @@ Parameters: ``-g`` (the ground truth file), ``-p`` (the prediction file).
 2. Create a virtual environment and install the requirements:
 
     ```bash
-    conda create -n lm-kbc-2025 python=3.12.1
+    conda create -n lm-kbc-2025 python=3.11
     ```
 
     ```bash
@@ -159,29 +159,34 @@ Parameters: ``-g`` (the ground truth file), ``-p`` (the prediction file).
 
 ### Baselines
 
-We provide baselines using Masked Language
-Models ([models/baseline_fill_mask_model.py](models/baseline_fill_mask_model.py)),
-Autoregressive Language
-Models ([models/baseline_generation_model.py](models/baseline_generation_model.py)),
-and Llama-3 chat models ([models/baseline_llama_3_chat_model.py](models/baseline_llama_3_chat_model.py)),
+We provide baselines using Qwen3-8B model ([models/baseline_qwen_3_model.py](models/baseline_qwen_3_model.py)),
 
 You can run these baselines via the [baseline.py](baseline.py) script and
 providing it with the corresponding configuration file. We provide example
 configuration files for the baselines in the [configs](configs) directory.
 
-#### Baseline 1: bert-large-cased
+#### Baseline: Qwen3-8B
 
 Config
-file: [configs/baseline-qwen.yaml](configs/baseline-qwen2.5-7b.yaml)
+file: [configs/baseline-qwen-3.yaml](configs/baseline-qwen-3.yaml)
 
 ```bash
-python baseline.py -c configs/baseline-bert-large-cased.yaml -i data/val.jsonl
-python evaluate.py -g data/val.jsonl -p output/baseline-bert-large-cased.jsonl
+python baseline.py -c configs/baseline-qwen-3.yaml -i data/val.jsonl
+python evaluate.py -g data/val.jsonl -p output/baseline-qwen-3.jsonl
 ```
 
-Results:
+Results (with entity disambiguation):
 
-
+```text
+                              macro-p  macro-r  macro-f1  micro-p  micro-r  micro-f1  avg. #preds  #empty preds
+awardWonBy                      0.384    0.025     0.042    0.299    0.026     0.047       12.700             2
+companyTradesAtStockExchange    0.830    0.591     0.550    0.617    0.367     0.460        0.470            58
+countryLandBordersCountry       0.882    0.877     0.859    0.841    0.799     0.819        2.500            17
+hasArea                         0.200    0.200     0.200    0.200    0.200     0.200        1.000             0
+hasCapacity                     0.040    0.040     0.040    0.040    0.040     0.040        1.000             0
+personHasCityOfDeath            0.470    0.540     0.300    0.145    0.164     0.154        0.620            38
+*** All Relations ***           0.456    0.412     0.351    0.401    0.122     0.187        1.268           115
+```
 
 ### How to structure your prediction file
 
@@ -233,6 +238,3 @@ Links to the CodaLab competition leaderboard:
 
 To participate in the competition and join the leaderboard, sign up for your team account at [CodaLab](https://codalab.lisn.upsaclay.fr).
 Then register for the competition and submit your predictions at Participate -> Submit / View Results.
-
-We have also uploaded the baseline results (validation):
-![codalab-baseline](assets/codalab-baselines.png)

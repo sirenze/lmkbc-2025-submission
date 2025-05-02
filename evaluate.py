@@ -6,14 +6,13 @@ from typing import List, Dict, Union
 import pandas as pd
 
 RELATION_TYPE = {
-    "awardWonBy": "string",  
+    "awardWonBy": "string",
     "hasCapacity": "numeric",
     "hasArea": "numeric",
-    "countryLandBordersCountry": "string",  
+    "countryLandBordersCountry": "string",
     "personHasCityOfDeath": "string",
-    "companyTradesAtStockExchange" : "string"
+    "companyTradesAtStockExchange": "string"
 }
-
 
 
 def read_jsonl_file(file_path: Union[str, Path]) -> List[Dict]:
@@ -31,11 +30,12 @@ def true_positives(preds: List[str], gts: List[str], rel: str, rel_type: str, to
         raise ValueError(f"Unknown relation type: {rel_type}")
 
 
-def try_parse_number(value: str) -> float:
+def try_parse_number(value: str) -> float | None:
     try:
         return float(value.replace(",", "").strip())
     except (ValueError, AttributeError):
         return None
+
 
 def numeric_true_positives(preds: List[str], gts: List[str], tolerance: float = 0.05) -> int:
     tp = 0
@@ -55,7 +55,6 @@ def numeric_true_positives(preds: List[str], gts: List[str], tolerance: float = 
 
 def string_true_positives(preds: List[str], gts: List[str]) -> int:
     return sum(1 for pred in preds if pred.strip() in gts)
-
 
 
 def precision(preds: List[str], gts: List[str]) -> float:
@@ -90,14 +89,15 @@ def f1_score(p: float, r: float) -> float:
 
 
 def rows_to_dict(rows: List[Dict]) -> Dict:
-    """Index the ground truth/prediction rows by subject entity and relation."""
+    """ Index the ground truth/prediction rows by subject entity and relation. """
     return {
-        (r["SubjectEntity"], r["Relation"]): list(set(r["ObjectEntities"]))
+        (r["SubjectEntity"], r["Relation"]): list(set(r["ObjectEntitiesID"]))
         for r in rows
     }
 
 
-def evaluate_per_sr_pair(pred_rows, gt_rows, rel_types: Dict[str, str], tolerance: float = 0.05) -> List[Dict[str, float]]:
+def evaluate_per_sr_pair(pred_rows, gt_rows, rel_types: Dict[str, str], tolerance: float = 0.05) -> List[
+    Dict[str, float]]:
     pred_dict = rows_to_dict(pred_rows)
     gt_dict = rows_to_dict(gt_rows)
 
@@ -109,7 +109,6 @@ def evaluate_per_sr_pair(pred_rows, gt_rows, rel_types: Dict[str, str], toleranc
 
         rel_type = rel_types.get(rel, "string")  # default to "string" if not found
         tp = true_positives(preds, gts, rel=rel, rel_type=rel_type, tolerance=tolerance)
-
 
         p = tp / len(preds) if preds else 1.0
         r = tp / len(gts) if gts else 1.0
@@ -129,9 +128,8 @@ def evaluate_per_sr_pair(pred_rows, gt_rows, rel_types: Dict[str, str], toleranc
     return sorted(results, key=lambda x: (x["Relation"], x["SubjectEntity"]))
 
 
-
 def macro_average_per_relation(scores_per_sr: List[Dict[str, float]]) -> dict:
-    """Compute the macro average scores per relation"""
+    """ Compute the macro average scores per relation """
     scores = {}
     for r in scores_per_sr:
         if r["Relation"] not in scores:
@@ -166,7 +164,7 @@ def macro_average_per_relation(scores_per_sr: List[Dict[str, float]]) -> dict:
 
 
 def micro_average_per_relation(scores_per_sr: List[Dict[str, float]]) -> dict:
-    """Compute the micro average scores per relation"""
+    """ Compute the micro average scores per relation """
     scores = {}
     for r in scores_per_sr:
         if r["Relation"] not in scores:
@@ -210,7 +208,7 @@ def micro_average_per_relation(scores_per_sr: List[Dict[str, float]]) -> dict:
 
 
 def prediction_statistics(scores_per_sr: List[Dict[str, float]]) -> dict:
-    """Get the average numbers of predictions and the numbers of empty predictions per relation."""
+    """ Get the average numbers of predictions and the numbers of empty predictions per relation. """
     stats = {}
     for r in scores_per_sr:
         if r["Relation"] not in stats:

@@ -119,13 +119,16 @@ class Qwen3Model(GenerationModel):
             # thinking_content = qa_answer[:index]
             qa_answer = qa_answer[index:].strip()
             if inp["Relation"] in ["hasArea", "hasCapacity"]:
+                object_entities = [qa_answer]
                 wikidata_ids = [qa_answer]
             else:
+                object_entities = qa_answer.split(", ")
                 wikidata_ids = self.disambiguate_entities(qa_answer)
             results.append({
                 "SubjectEntityID": inp["SubjectEntityID"],
                 "SubjectEntity": inp["SubjectEntity"],
                 "Relation": inp["Relation"],
+                "ObjectEntities": object_entities,
                 "ObjectEntitiesID": wikidata_ids,
             })
 

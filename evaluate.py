@@ -91,7 +91,7 @@ def f1_score(p: float, r: float) -> float:
 def rows_to_dict(rows: List[Dict]) -> Dict:
     """ Index the ground truth/prediction rows by subject entity and relation. """
     return {
-        (r["SubjectEntity"], r["Relation"]): list(set(r["ObjectEntitiesID"]))
+        (r["SubjectEntity"], r["Relation"]): list(set(r["ObjectEntities"]))
         for r in rows
     }
 

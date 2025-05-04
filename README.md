@@ -25,7 +25,7 @@ This repository contains:
 
 ## News
 
-- 25.4.2025: Release of dataset v1.0
+- 01.05.2025: Release of dataset
 
 ## Challenge overview
 
@@ -175,17 +175,30 @@ python baseline.py -c configs/baseline-qwen-3.yaml -i data/val.jsonl
 python evaluate.py -g data/val.jsonl -p output/baseline-qwen-3.jsonl
 ```
 
+Results (without entity disambiguation):
+
+```text
+                              macro-p  macro-r  macro-f1  micro-p  micro-r  micro-f1  avg. #preds  #empty preds
+awardWonBy                      0.173    0.027     0.043    0.173    0.021     0.038       18.500             0
+companyTradesAtStockExchange    0.230    0.561     0.215    0.248    0.329     0.283        1.050             0
+countryLandBordersCountry       0.653    0.873     0.628    0.787    0.782     0.784        2.618             0
+hasArea                         0.180    0.180     0.180    0.180    0.180     0.180        1.000             0
+hasCapacity                     0.030    0.030     0.030    0.030    0.030     0.030        1.000             0
+personHasCityOfDeath            0.100    0.550     0.100    0.100    0.179     0.128        1.000             0
+*** All Relations ***           0.209    0.401     0.200    0.298    0.114     0.165        1.607             0
+```
+
 Results (with entity disambiguation):
 
 ```text
                               macro-p  macro-r  macro-f1  micro-p  micro-r  micro-f1  avg. #preds  #empty preds
-awardWonBy                      0.384    0.025     0.042    0.299    0.026     0.047       12.700             2
-companyTradesAtStockExchange    0.830    0.591     0.550    0.617    0.367     0.460        0.470            58
-countryLandBordersCountry       0.882    0.877     0.859    0.841    0.799     0.819        2.500            17
-hasArea                         0.200    0.200     0.200    0.200    0.200     0.200        1.000             0
-hasCapacity                     0.040    0.040     0.040    0.040    0.040     0.040        1.000             0
-personHasCityOfDeath            0.470    0.540     0.300    0.145    0.164     0.154        0.620            38
-*** All Relations ***           0.456    0.412     0.351    0.401    0.122     0.187        1.268           115
+awardWonBy                      0.512    0.032     0.050    0.205    0.024     0.044       17.600             3
+companyTradesAtStockExchange    0.800    0.601     0.515    0.596    0.392     0.473        0.520            53
+countryLandBordersCountry       0.891    0.877     0.852    0.870    0.788     0.827        2.382            16
+hasArea                         0.180    0.180     0.180    0.180    0.180     0.180        1.000             0
+hasCapacity                     0.030    0.030     0.030    0.030    0.030     0.030        1.000             0
+personHasCityOfDeath            0.590    0.550     0.390    0.196    0.182     0.189        0.510            49
+*** All Relations ***           0.472    0.410     0.356    0.373    0.120     0.182        1.341           121
 ```
 
 ### How to structure your prediction file
@@ -196,7 +209,8 @@ contain at least 3 fields to be used by the evaluation script:
 
 - ``SubjectEntity``: the subject entity (string)
 - ``Relation``: the relation (string)
-- ``ObjectEntitiesID``: the predicted object entities ID, which should be a list
+- ``ObjectEntities``: the predicted object entity strings
+- ``ObjectEntitiesID``: the predicted object entity IDs, which should be a list
   of Wikidata IDs (strings).
 
 This is an example of how to write a prediction file:
@@ -209,16 +223,19 @@ predictions = [
     {
         "SubjectEntity": "Dominican republic",
         "Relation": "CountryBordersWithCountry",
+        "ObjectEntities": ["Haiti", "Venezuela", "United States", "Germany"],
         "ObjectEntitiesID": ["Q790", "Q717", "Q30", "Q183"]
     },
     {
-        "SubjectEntity": "Eritrea",
-        "Relation": "CountryBordersWithCountry",
-        "ObjectEntitiesID": ["Q115"]
+        "SubjectEntity": "Jiaxing Stadium in Jiaxing",
+        "Relation": "hasCapacity",
+        "ObjectEntities": ["35000"],
+        "ObjectEntitiesID": ["35000"]
     },
     {
-        "SubjectEntity": "Estonia",
+        "SubjectEntity": "Mauritius",
         "Relation": "CountryBordersWithCountry",
+        "ObjectEntities": [],
         "ObjectEntitiesID": []
     }
 

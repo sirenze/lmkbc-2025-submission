@@ -106,7 +106,7 @@ Number of unique subject-entities in the data splits.
         <td>100</td>
         <td>100</td>
         <td>100</td>
-        <td>Object is numeric</td>
+        <td>Object is numeric (square km)</td>
     </tr>
 </tbody>
 </table>

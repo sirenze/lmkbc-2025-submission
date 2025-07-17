@@ -250,12 +250,7 @@ with open(fp, "w") as f:
 
 ### Submit your predictions to CodaLab
 
-Links to the CodaLab competition leaderboard (validation): https://codalab.lisn.upsaclay.fr/competitions/22964
+Links to the CodaLab competition leaderboard (test): https://codalab.lisn.upsaclay.fr/competitions/23218
 
-We will release the test leaderboard with the test dataset.
-
-To participate in the competition and join the leaderboard, sign up for your team account at [CodaLab](https://codalab.lisn.upsaclay.fr/competitions/22964).
+To participate in the competition and join the leaderboard, sign up for your team account at [CodaLab](https://codalab.lisn.upsaclay.fr/competitions/23218).
 Then register for the competition and submit your predictions at Participate -> Submit / View Results.
-
-The baseline result of the Qwen3-8B model is shown on the leaderboard under the name `lm-kbc`:
-![codalab](assets/codalab.png)

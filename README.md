@@ -175,7 +175,7 @@ python baseline.py -c configs/baseline-qwen-3.yaml -i data/val.jsonl
 python evaluate.py -g data/val.jsonl -p output/baseline-qwen-3.jsonl
 ```
 
-Results (without entity disambiguation):
+Results (validation, without entity disambiguation):
 
 ```text
                               macro-p  macro-r  macro-f1  micro-p  micro-r  micro-f1  avg. #preds  #empty preds
@@ -188,7 +188,7 @@ personHasCityOfDeath            0.100    0.550     0.100    0.100    0.179     0
 *** All Relations ***           0.209    0.401     0.200    0.298    0.114     0.165        1.607             0
 ```
 
-Results (with entity disambiguation):
+Results (validation, with entity disambiguation):
 
 ```text
                               macro-p  macro-r  macro-f1  micro-p  micro-r  micro-f1  avg. #preds  #empty preds
@@ -199,6 +199,19 @@ hasArea                         0.180    0.180     0.180    0.180    0.180     0
 hasCapacity                     0.030    0.030     0.030    0.030    0.030     0.030        1.000             0
 personHasCityOfDeath            0.590    0.550     0.390    0.196    0.182     0.189        0.510            49
 *** All Relations ***           0.472    0.410     0.356    0.373    0.120     0.182        1.341           121
+```
+
+**Results (test, without entity disambiguation):**
+
+```text
+                              macro-p  macro-r  macro-f1  micro-p  micro-r  micro-f1  avg. #preds  #empty preds
+awardWonBy                      0.240    0.090     0.117    0.261    0.072     0.113       15.300             0
+companyTradesAtStockExchange    0.185    0.591     0.167    0.208    0.286     0.240        1.060             0
+countryLandBordersCountry       0.768    0.812     0.702    0.892    0.764     0.823        3.463             0
+hasArea                         0.240    0.240     0.240    0.240    0.240     0.240        1.000             0
+hasCapacity                     0.040    0.040     0.040    0.040    0.040     0.040        1.000             0
+personHasCityOfDeath            0.080    0.650     0.080    0.078    0.186     0.110        1.020             0
+*** All Relations ***           0.227    0.435     0.212    0.385    0.267     0.315        1.662             0
 ```
 
 ### How to structure your prediction file
@@ -254,3 +267,4 @@ Links to the CodaLab competition leaderboard (test): https://codalab.lisn.upsacl
 
 To participate in the competition and join the leaderboard, sign up for your team account at [CodaLab](https://codalab.lisn.upsaclay.fr/competitions/23218).
 Then register for the competition and submit your predictions at Participate -> Submit / View Results.
+The Qwen3-8B baseline results were provided by the user _lm-kbc_ on the leaderboard, with a score of 0.2116.

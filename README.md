@@ -1,57 +1,39 @@
 # LM-KBC: Knowledge Base Construction from Pre-trained Language Models (4th Edition)
 
-This repository hosts data for the LM-KBC challenge at ISWC
-2025 (https://lm-kbc.github.io/challenge2025/).
+More details about the LM-KBC challenge at ISWC 2025 - https://lm-kbc.github.io/challenge2025/.
 
 This repository contains:
 
-- The dataset for the challenge
-- Evaluation script
-- Baselines
-- Instructions for submitting your predictions
+- From the organisers: 
+    - The dataset for the challenge (train, val, test)
+    - Evaluation and baseline scripts
+- Modifications:
+    - Submitted scripts 
+        - Files modified: models/baseline_generation_model.py, 
+        models/baseline_qwen_3_model.py, configs/baseline-qwen-3.yaml, baseline.py,
+        prompt_templates/prompts
+    - Outputs
 
 ## Table of contents
 
-1. [News](#news)
-2. [Challenge overview](#challenge-overview)
-3. [Dataset](#dataset)
-4. [Evaluation metrics](#evaluation-metrics)
-5. [Getting started](#getting-started)
-    - [Setup](#setup)
-    - [Baselines](#baselines)
-        - [Baseline: Qwen3-8B](#baseline-qwen3-8b)
-    - [How to structure your prediction file](#how-to-structure-your-prediction-file)
-    - [Submit your predictions to CodaLab](#submit-your-predictions-to-codalab)
+1. [Challenge overview](#challenge-overview)
+2. [Dataset](#dataset)
+3. [Evaluation metrics](#evaluation-metrics)
+4. [Getting started](#getting-started)
+    - [Initial Setup](#initial-setup)
+    - [Predictions](#generating-and-evaluating-predictions)
+5. [Comparisons](#comparisons)
+    - [Baselines: Qwen3-8B](#baselines-qwen3-8b)
+    - [Submission](#submission-qwen3-8b)
+6. [CodaLab](#codalab-leaderboards)
 
-## News
+## Challenge overview 
 
-- 01.05.2025: Release of dataset
-
-## Challenge overview
-
-Pretrained language models (LMs) like ChatGPT have advanced a range of semantic
-tasks and have also shown promise for
-knowledge extraction from the models itself. Although several works have
-explored this ability in a setting called
-probing or prompting, the viability of knowledge base construction from LMs
-remains under-explored. In the 3rd edition
-of this challenge, we invite participants to build actual disambiguated
-knowledge bases from LMs, for given subjects and
-relations. In crucial difference to existing probing benchmarks like
-LAMA ([Petroni et al., 2019](https://arxiv.org/pdf/1909.01066.pdf)), we make no
-simplifying assumptions on relation
-cardinalities, i.e., a subject-entity can stand in relation with zero, one, or
-many object-entities. 
-
-Unlike earlier editions, this version does **not require entity disambiguation**. Instead, we
-evaluate the predicted object strings directly using string match metrics.
-
-> Formally, given the input subject-entity (s) and relation (r), the task is to
-> predict all the correct
-> object-entities ({o<sub>1</sub>, o<sub>2</sub>, ..., o<sub>k</sub>}) using LM
-> probing.
+https://github.com/lm-kbc/dataset2025?tab=readme-ov-file#challenge-overview
 
 ## Dataset
+
+From https://github.com/lm-kbc/dataset2025?tab=readme-ov-file#dataset : 
 
 Number of unique subject-entities in the data splits.
 
@@ -113,6 +95,8 @@ Number of unique subject-entities in the data splits.
 
 ## Evaluation metrics
 
+From https://github.com/lm-kbc/dataset2025?tab=readme-ov-file#evaluation-metrics : 
+
 We evaluate the predictions using macro precision, recall, and F1-score.
 See the evaluation script ([evaluate.py](evaluate.py)) for more details.
 
@@ -126,14 +110,17 @@ Parameters: ``-g`` (the ground truth file), ``-p`` (the prediction file).
 
 ## Getting started
 
-### Setup
+### Initial Setup
+
+From https://github.com/lm-kbc/dataset2025?tab=readme-ov-file#setup : 
 
 1. Clone this repository:
 
     ```bash
     mkdir lm-kbc-2025
     cd lm-kbc-2025
-    git clone https://github.com/lm-kbc/dataset2025.git
+    # git clone https://github.com/lm-kbc/dataset2025.git
+    git clone https://github.com/sirenze/lmkbc-2025-submission.git
     cd dataset2025
     ```
 
@@ -148,34 +135,36 @@ Parameters: ``-g`` (the ground truth file), ``-p`` (the prediction file).
     pip install -r requirements.txt
     ```
 
-3. Write your own solution and generate predictions (format described
-   in [How to structure your prediction file](#how-to-structure-your-prediction-file)).
-4. Evaluate your predictions using the evaluation script
-   (see [Evaluation metrics](#evaluation-metrics)).
-5. Submit your solutions to the organizers
-   (see [Call for Participants](https://lm-kbc.github.io/challenge2025/#call-for-participants)),
-   and/or submit your predictions to CodaLab
-   (see [Submit your predictions to CodaLab](#submit-your-predictions-to-codalab)).
+### Generating and Evaluating Predictions
 
-### Baselines
+3. Since the prediction file follows a similar structure as the baseline, the
+same commands can be used, albeit with the correct file names like below:
 
-We provide baselines using Qwen3-8B model ([models/baseline_qwen_3_model.py](models/baseline_qwen_3_model.py)),
+From https://github.com/lm-kbc/dataset2025?tab=readme-ov-file#baselines :
 
-You can run these baselines via the [baseline.py](baseline.py) script and
-providing it with the corresponding configuration file. We provide example
-configuration files for the baselines in the [configs](configs) directory.
-
-#### Baseline: Qwen3-8B
-
-Config
-file: [configs/baseline-qwen-3.yaml](configs/baseline-qwen-3.yaml)
+Config file: [configs/my-qwen-3.yaml](configs/my-qwen-3.yaml)
 
 ```bash
-python baseline.py -c configs/baseline-qwen-3.yaml -i data/val.jsonl
-python evaluate.py -g data/val.jsonl -p output/baseline-qwen-3.jsonl
+python my_baseline.py -c configs/my-qwen-3.yaml -i data/val.jsonl
+python evaluate.py -g data/val.jsonl -p outputs/my-qwen-3.jsonl
 ```
 
-Results (validation, without entity disambiguation):
+And similarly for the test set :
+
+Config file: [configs/my-qwen-3.yaml](configs/my-qwen-3.yaml)
+
+```bash
+python my_baseline.py -c configs/my-qwen-3.yaml -i data/test.jsonl -o outputs/test-outputs.jsonl
+```
+
+## Comparisons
+
+### Baselines: Qwen3-8B
+
+From https://github.com/lm-kbc/dataset2025?tab=readme-ov-file#baseline-qwen3-8b : 
+
+
+**Results (validation, without entity disambiguation):**
 
 ```text
                               macro-p  macro-r  macro-f1  micro-p  micro-r  micro-f1  avg. #preds  #empty preds
@@ -186,19 +175,6 @@ hasArea                         0.180    0.180     0.180    0.180    0.180     0
 hasCapacity                     0.030    0.030     0.030    0.030    0.030     0.030        1.000             0
 personHasCityOfDeath            0.100    0.550     0.100    0.100    0.179     0.128        1.000             0
 *** All Relations ***           0.209    0.401     0.200    0.298    0.114     0.165        1.607             0
-```
-
-Results (validation, with entity disambiguation):
-
-```text
-                              macro-p  macro-r  macro-f1  micro-p  micro-r  micro-f1  avg. #preds  #empty preds
-awardWonBy                      0.512    0.032     0.050    0.205    0.024     0.044       17.600             3
-companyTradesAtStockExchange    0.800    0.601     0.515    0.596    0.392     0.473        0.520            53
-countryLandBordersCountry       0.891    0.877     0.852    0.870    0.788     0.827        2.382            16
-hasArea                         0.180    0.180     0.180    0.180    0.180     0.180        1.000             0
-hasCapacity                     0.030    0.030     0.030    0.030    0.030     0.030        1.000             0
-personHasCityOfDeath            0.590    0.550     0.390    0.196    0.182     0.189        0.510            49
-*** All Relations ***           0.472    0.410     0.356    0.373    0.120     0.182        1.341           121
 ```
 
 **Results (test, without entity disambiguation):**
@@ -214,57 +190,35 @@ personHasCityOfDeath            0.080    0.650     0.080    0.078    0.186     0
 *** All Relations ***           0.227    0.435     0.212    0.385    0.267     0.315        1.662             0
 ```
 
-### How to structure your prediction file
+### Submission: Qwen3-8B
 
-Your prediction file should be in the jsonl format.
-Each line of a valid prediction file contains a JSON object which must
-contain at least 3 fields to be used by the evaluation script:
+**Results (validation, without entity disambiguation):**
 
-- ``SubjectEntity``: the subject entity (string)
-- ``Relation``: the relation (string)
-- ``ObjectEntities``: the predicted object entity strings
-- ``ObjectEntitiesID``: the predicted object entity IDs, which should be a list
-  of Wikidata IDs (strings).
+<pre>
+                              macro-p  macro-r  macro-f1
+awardWonBy                      <b>0.193</b>    <b>0.057</b>     <b>0.075</b>
+companyTradesAtStockExchange    <b>0.240</b>    <b>0.573</b>     <b>0.225</b>
+countryLandBordersCountry       <b>0.674</b>    <b>0.909</b>     <b>0.661</b>
+hasArea                         <b>0.200</b>    <b>0.200</b>     <b>0.200</b>
+hasCapacity                     <b>0.080</b>    <b>0.080</b>     <b>0.080</b>
+personHasCityOfDeath            <b>0.110</b>    <b>0.560</b>     <b>0.110</b>
+*** All Relations ***           <b>0.231</b>    <b>0.426</b>     <b>0.224</b>
+</pre>
 
-This is an example of how to write a prediction file:
+**Results (test, without entity disambiguation):**
 
-```python
-import json
+<pre>
+                              macro-p  macro-r  macro-f1
+awardWonBy                      0.191    <b>0.159</b>     <b>0.139</b>
+companyTradesAtStockExchange    0.178    <b>0.604</b>     <b>0.170</b>
+countryLandBordersCountry       0.737    <b>0.817</b>     0.690
+hasArea                         <b>0.260</b>    <b>0.260</b>     <b>0.260</b>
+hasCapacity                     <b>0.150</b>    <b>0.150</b>     <b>0.150</b>
+personHasCityOfDeath            <b>0.090</b>    <b>0.660</b>     <b>0.090</b>
+*** All Relations ***           <b>0.249</b>    <b>0.469</b>     <b>0.240</b>
+</pre>
 
-# Dummy predictions
-predictions = [
-    {
-        "SubjectEntity": "Dominican republic",
-        "Relation": "CountryBordersWithCountry",
-        "ObjectEntities": ["Haiti", "Venezuela", "United States", "Germany"],
-        "ObjectEntitiesID": ["Q790", "Q717", "Q30", "Q183"]
-    },
-    {
-        "SubjectEntity": "Jiaxing Stadium in Jiaxing",
-        "Relation": "hasCapacity",
-        "ObjectEntities": ["35000"],
-        "ObjectEntitiesID": ["35000"]
-    },
-    {
-        "SubjectEntity": "Mauritius",
-        "Relation": "CountryBordersWithCountry",
-        "ObjectEntities": [],
-        "ObjectEntitiesID": []
-    }
+## CodaLab Leaderboards
 
-]
-
-fp = "./path/to/your/prediction/file.jsonl"
-
-with open(fp, "w") as f:
-    for pred in predictions:
-        f.write(json.dumps(pred) + "\n")
-```
-
-### Submit your predictions to CodaLab
-
-Links to the CodaLab competition leaderboard (test): https://codalab.lisn.upsaclay.fr/competitions/23218
-
-To participate in the competition and join the leaderboard, sign up for your team account at [CodaLab](https://codalab.lisn.upsaclay.fr/competitions/23218).
-Then register for the competition and submit your predictions at Participate -> Submit / View Results.
-The Qwen3-8B baseline results were provided by the user _lm-kbc_ on the leaderboard, with a score of 0.2116.
+- validation - https://codalab.lisn.upsaclay.fr/competitions/22964
+- test - https://codalab.lisn.upsaclay.fr/competitions/23218
